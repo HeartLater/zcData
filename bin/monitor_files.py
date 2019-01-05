@@ -78,20 +78,24 @@ class FileMonitor(object):
     def create_index(self, index_name, index_type):
 
         if 'tytsmb' in index_name:
-            ts_header = self.ts_header_TYTSMB
+            res = os.system("sh ./create_tytsmb_index.sh")
+            print res
+            # ts_header = self.ts_header_TYTSMB
         else:
-            ts_header = self.ts_header_YSHJXX
-        """创建索引"""
-        # 映射
-        _index_mappings = {
-            'mappings': {
-                'index_type': {
-                    'properties': {}
-                }
-            }
-        }
-        _type = {'type': 'string'}
-        for item in ts_header:
-            _index_mappings['mappings']['index_type']['properties'][item] = _type
-        res = self.es.indices.create(index=index_name, body=_index_mappings)
-        # print res
+            res = os.system("sh ./create_yshjxx_index.sh")
+            print res
+            # ts_header = self.ts_header_YSHJXX
+        # """创建索引"""
+        # # 映射
+        # _index_mappings = {
+        #     'mappings': {
+        #         'index_type': {
+        #             'properties': {}
+        #         }
+        #     }
+        # }
+        # _type = {'type': 'string'}
+        # for item in ts_header:
+        #     _index_mappings['mappings']['index_type']['properties'][item] = _type
+        # res = self.es.indices.create(index=index_name, body=_index_mappings)
+        # # print res
