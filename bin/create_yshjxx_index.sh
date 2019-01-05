@@ -9,7 +9,7 @@ curl -XPOST "http://10.0.37.237:8080/DatasetManager/createDataset" -d '{
 			"name": "",
 			"index": "not_analyzed",
 			"store": "true",
-			"type": "date",
+			"type": "string",
 			"key": "false"
 		},
 		{
