@@ -19,8 +19,8 @@ class FileMonitor(object):
 
 
     def file_monitor(self):
-        with open(self.record_file,'w') as f:
-            f.close()
+        # with open(self.record_file,'w') as f:
+        #     f.close()
         # 跟上次记录历史对比，判断是否有新增文件
         record_dict = {}
         record = open(self.record_file, 'r').readlines()
@@ -34,6 +34,7 @@ class FileMonitor(object):
             for name in files:
                 print "all files name:" + name
                 if not record_dict.has_key(name):
+                    print "the file will be input:" + name
                     # 调用数据处理，或者可以复制该文件到其他地方处理
                     self.file_handler(root=root, name=name)
 
@@ -43,9 +44,10 @@ class FileMonitor(object):
         create_time = os.stat(os.path.join(root, name)).st_mtime
         # 将 文件名:创建时间 追加到记录文件
         with open(self.record_file, 'a') as f:
-            f.write(':'.join('%s' % name, '%s\n' % create_time))
+            f.write('%s:%s\n' % (name, create_time))
+            # f.write(':'.join('%s' % name, '%s\n' % create_time))
             f.close()
-        index_name = name.lower()   # 确定索引名称
+        index_name = "_".join(name.lower().split(".")[0:2])  # 确定索引名称
         if not self.es.indices.exists(index=index_name):
             self.create_index(index_name, index_name)
         actions = []
@@ -53,8 +55,13 @@ class FileMonitor(object):
             source = {}
             fields = line.split(',')
             # 根据索引名确定使用哪个header
-            for i in range(len(self.ts_header)):
-                source[self.ts_header[i]] = fields[i]
+            if 'TYTSMB' in name:
+                ts_header = self.ts_header_TYTSMB
+            else:
+                ts_header = self.ts_header_YSHJXX
+
+            for i in range(len(ts_header)):
+                source[ts_header[i]] = fields[i]
             action = {
                 '_index': index_name,
                 '_type': index_name,
@@ -69,6 +76,11 @@ class FileMonitor(object):
             print success
 
     def create_index(self, index_name, index_type):
+
+        if 'tytsmb' in index_name:
+            ts_header = self.ts_header_TYTSMB
+        else:
+            ts_header = self.ts_header_YSHJXX
         """创建索引"""
         # 映射
         _index_mappings = {
@@ -79,7 +91,7 @@ class FileMonitor(object):
             }
         }
         _type = {'type': 'string'}
-        for item in self.ts_header:
+        for item in ts_header:
             _index_mappings['mappings']['index_type']['properties'][item] = _type
         res = self.es.indices.create(index=index_name, body=_index_mappings)
         # print res
