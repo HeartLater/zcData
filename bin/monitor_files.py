@@ -65,7 +65,7 @@ class FileMonitor(object):
             action = {
                 '_index': index_name,
                 '_type': index_name,
-                'source': source
+                '_source': source
             }
             actions.append(action)
             if len(actions) > 5000:
