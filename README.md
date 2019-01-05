@@ -1,5 +1,8 @@
 # zcData
-
+# 运行前需要修改：
+    1.conf文件
+    2.index插入脚本中aus的ip
+    3.定时任务
 # 安装python2.7
     // 解压文件
     xz -d Python-2.7.13.tar.xz
