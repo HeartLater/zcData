@@ -4,5 +4,10 @@
         "port": 8200,
         "timeout": 720000
     },
-    "path": "/xdata/zcData/sourceFiles/MSGDAT/Ts/taishiTest"
+    "path": "/xdata/zcData/sourceFiles/MSGDAT/Ts/taishiTest",
+    "hive": {
+        "host": "10.0.37.235",
+        "port": 10000,
+        "timeout": 720000
+    }
 }
