@@ -12,8 +12,10 @@ class FileMonitor(object):
         super(FileMonitor, self).__init__()
         self.file_path = file_path
         self.record_file = record_file
-        self.ts_header = []
+        # self.ts_header = ['time','batch_no','track_target_kind','track_target_type','attribute','nationality','order','dynamic','high','longitude','latitude','distance_x','distance_y','velocity_x','velocity_y','track_time','bearing','velocity_h','threat_cla','threat_time','battle_state','flag']
         self.es = Elasticsearch(hosts=elastic['host'], port=elastic['port'], timeout=elastic['timeout'])
+        self.ts_header_TYTSMB = ['time','batch_no','track_target_kind','track_target_type','attribute','nationality','order','dynamic','high','longitude','latitude','distance_x','distance_y','velocity_x','velocity_y','track_time','bearing','velocity_h','threat_cla','threat_time','battle_state','flag']
+        self.ts_header_YSHJXX = ['time','trs_plat_station_no','track_target_kind','track_target_type','fight_state','attribute','track_target_num','nationality','order','dynamic','cooperate_station_no','bearing_precision','distance_precision','depth','depth_precision','high_precision','sys_batch_no','batch_no','high','longitude','latitude','distance_x','distance_y','velocity_x','velocity_y','time2','bearing','velocity_h']
 
 
     def file_monitor(self):
@@ -22,8 +24,6 @@ class FileMonitor(object):
         # 跟上次记录历史对比，判断是否有新增文件
         record_dict = {}
         record = open(self.record_file, 'r').readlines()
-        if not record:
-            return
         for row in record:
             (key, value) = row.split(':')
             record_dict[key] = value
@@ -32,6 +32,7 @@ class FileMonitor(object):
             # 这里只关心是否有新增文件，并不管是否有修改
             # 因此只需要比较字典是否包含，不需要比较文件更改时间
             for name in files:
+                print "all files name:" + name
                 if not record_dict.has_key(name):
                     # 调用数据处理，或者可以复制该文件到其他地方处理
                     self.file_handler(root=root, name=name)
@@ -44,9 +45,9 @@ class FileMonitor(object):
         with open(self.record_file, 'a') as f:
             f.write(':'.join('%s' % name, '%s\n' % create_time))
             f.close()
-        index_name = name    # 确定索引名称
+        index_name = name.lower()   # 确定索引名称
         if not self.es.indices.exists(index=index_name):
-            self.es.create_index(index_name, index_name)
+            self.create_index(index_name, index_name)
         actions = []
         for line in open(os.path.join(root, name)):
             source = {}
@@ -62,8 +63,10 @@ class FileMonitor(object):
             actions.append(action)
             if len(actions) > 5000:
                 success, _ = bulk(self.es, actions)
+                actions = []
         if actions:
             success, _ = bulk(self.es, actions)
+            print success
 
     def create_index(self, index_name, index_type):
         """创建索引"""

@@ -1,8 +1,8 @@
 {
     "elastic": {
-        "host": "10.0.37.235",
+        "host": "10.0.37.237",
         "port": 8200,
-        "timeout": 720000,
+        "timeout": 720000
     },
-    "path": "",
+    "path": "/xdata/zcData/sourceFiles/MSGDAT/Ts/taishiTest"
 }

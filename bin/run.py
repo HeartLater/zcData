@@ -1,3 +1,6 @@
+#!/usr/bin/env python
+# encoding: utf-8
+
 import sys
 import json
 from monitor_files import FileMonitor
@@ -10,7 +13,7 @@ def main():
     if len(sys.argv) >= 2:
         config_file = sys.argv[1]
     else:
-        config_file = 'conf/config.json'
+        config_file = '../conf/config.json'
 
     with open(config_file, 'r') as jsonfile:
         config = json.load(jsonfile)
