@@ -33,14 +33,24 @@ class FileMonitor(object):
             # 因此只需要比较字典是否包含，不需要比较文件更改时间
             for name in files:
                 print "all files name:" + name
-                if not record_dict.has_key(name):
+
+                if record_dict.has_key(name):
+                    continue
+                if 'TYTSMB' in name or 'YSHJXX' in name:
                     print "the file will be input:" + name
                     # 调用数据处理，或者可以复制该文件到其他地方处理
                     self.file_handler(root=root, name=name)
+                # if not record_dict.has_key(name):
+                #     print "the file will be input:" + name
+                #     self.file_handler(root=root, name=name)
 
 
     def file_handler(self, root='', name=''):
         """新增文件处理"""
+        # 将文件复制到feed路径
+        filepath = os.path.join(root, name)
+        # os.system('cp ' + filepath + ' /var/dropzone')
+        os.system('scp ' + filepath + ' 10.0.37.159:/var/dropzone')
         create_time = os.stat(os.path.join(root, name)).st_mtime
         # 将 文件名:创建时间 追加到记录文件
         with open(self.record_file, 'a') as f:
