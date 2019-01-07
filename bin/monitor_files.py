@@ -33,7 +33,7 @@ class FileMonitor(object):
             print end_file_name
         return file_list
 
-    def split_files(self, files_name):
+    def split_files(self, file_name):
         new_file_name_YSHJXX = "BDtaishi.YSHJXX." + \
             datetime.datetime.now().strftime('%Y%m%d%H%M%S%f') + ".dat"
         new_file_name_TYTSMB = "BDtaishi.TYTSMB." + \
@@ -57,7 +57,7 @@ class FileMonitor(object):
         if ys_list:
             with open(self.file_path + "/" + new_file_name_YSHJXX, 'a') as f:
                 f.writelines(ys_list)
-            self.file_handler(root=path, name=new_file_name_YSHJXX)
+            self.file_handler(root=self.file_path, name=new_file_name_YSHJXX)
         if ty_list:
             with open(self.file_path + "/" + new_file_name_TYTSMB, 'a') as f:
                 f.writelines(ty_list)
