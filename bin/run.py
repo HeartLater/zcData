@@ -18,7 +18,7 @@ def main():
     with open(config_file, 'r') as jsonfile:
         config = json.load(jsonfile)
 
-    monitor = FileMonitor(file_path=config['path'], elastic=config['elastic'])
+    monitor = FileMonitor(file_path=config['path'], elastic=config['elastic'], original_file_path=config['original_path'])
     # 监控目标路径
     monitor.file_monitor()
 
