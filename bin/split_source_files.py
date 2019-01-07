@@ -37,12 +37,12 @@ def split_files(files_name_list,path):
             for line in lines:
                 if "YSHJXX" in line:
                     str_list1 = line.split(',')[8:]
-                    str1 = ",".join(str_list1) + '\n'
+                    str1 = ",".join(str_list1)
                     ys_list.append(str1)
 
                 elif "TYTSMB" in line:
                     str_list2 = line.split(',')[8:]
-                    str2= ",".join(str_list2) + '\n'
+                    str2= ",".join(str_list2)
                     ty_list.append(str2)
                 else:
                     pass

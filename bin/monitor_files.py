@@ -45,23 +45,23 @@ class FileMonitor(object):
             for line in lines:
                 if "YSHJXX" in line:
                     str_list1 = line.split(',')[8:]
-                    str1 = ",".join(str_list1) + '\n'
+                    str1 = ",".join(str_list1)
                     ys_list.append(str1)
                 elif "TYTSMB" in line:
                     str_list2 = line.split(',')[8:]
-                    str2 = ",".join(str_list2) + '\n'
+                    str2 = ",".join(str_list2)
                     ty_list.append(str2)
                 else:
                     pass
             # 循环结束，判断连个list如果不为空，则打开相应的文件将list追加进文件
         if ys_list:
-            with open(path + "/" + new_file_name_YSHJXX, 'a') as f:
+            with open(self.file_path + "/" + new_file_name_YSHJXX, 'a') as f:
                 f.writelines(ys_list)
-                self.file_handler(root=path, name=new_file_name_YSHJXX)
+            self.file_handler(root=path, name=new_file_name_YSHJXX)
         if ty_list:
-            with open(path + "/" + new_file_name_TYTSMB, 'a') as f:
+            with open(self.file_path + "/" + new_file_name_TYTSMB, 'a') as f:
                 f.writelines(ty_list)
-                self.file_handler(root=path, name=new_file_name_TYTSMB)
+            self.file_handler(root=self.file_path, name=new_file_name_TYTSMB)
 
     def file_monitor(self):
         # 调用函数处理原始文件，将文件处理后导入file_path中，供给feed插入hive，供给下面程序插入aus
@@ -80,10 +80,10 @@ class FileMonitor(object):
                 if record_dict.has_key(name):
                     continue
                 if 'dat' in name:
-                    self.split_files(name)
                     # 文件分割结束，记录
                     with open(self.record_file, 'a') as f:
                         f.write('%s:1\n' % name)
+                    self.split_files(name)
 
     def file_handler(self, root='', name=''):
         """新增文件处理"""
